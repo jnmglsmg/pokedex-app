@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Region {
+struct Region : Codable {
     let name : String
-    let pokedexes : [Pokedex]
+    let pokedexes : [Pokedexes]
 }

@@ -1,5 +1,5 @@
 //
-//  Type.swift
+//  Pokedex.swift
 //  pokedex-app
 //
 //  Created by OPSolutions on 6/26/21.
@@ -8,8 +8,10 @@
 
 import UIKit
 
-struct Type: Codable {
-    var slot: Int
+struct Pokedexes: Codable{
+    var id: Int
+    var pokedexes: [Pokedex]
     var url: String
     var name: String
+    //create didset
 }

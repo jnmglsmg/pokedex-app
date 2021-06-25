@@ -11,9 +11,10 @@ import UIKit
 
 
 class NetworkService: NSObject {
-    static let baseUrl = "https://pokeapi.co/api/v2/"
+    let baseUrl = "https://pokeapi.co/api/v2"
     static let shared = NetworkService()
     
+    //MARK: API Setup Methods
     func getUrlSession() -> URLSession  {
         let session = URLSession(configuration: .default)
         return session
@@ -39,7 +40,7 @@ class NetworkService: NSObject {
         return request
     }
     
-    public func executeFetchRequest(with urlString: String) -> Void {
+    public func executeFetchRequest(with urlString: String, completion: @escaping (_ data: Data?, _ error: Error?) -> Void) {
         let session = getUrlSession()
         guard let urlRequest = setupGETUrlRequest(with: urlString) else {
             return
@@ -47,13 +48,18 @@ class NetworkService: NSObject {
         
         let dataTask = session.dataTask(with: urlRequest) { (data, response, error) in
             guard let data = data, error == nil else {
+                print("\(String(describing: error?.localizedDescription))")
+                completion(nil, error)
                 return;
             }
-            print("\(String(describing: data)) and \(String(describing: response))")
+            
+            completion(data, nil)
         }
         dataTask.resume()
     }
     
     //MARK: Parse Data
+    
+    
 
 }

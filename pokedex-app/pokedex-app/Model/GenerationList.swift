@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct GenerationList {
+struct GenerationList : Codable {
     let count : Int
-    let result : Generation
+    let result : [Generation]
 }

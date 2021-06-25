@@ -1,5 +1,5 @@
 //
-//  Variety.swift
+//  PokemonSpeciesUrl.swift
 //  pokedex-app
 //
 //  Created by OPSolutions on 6/26/21.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Variety: Codable {
-    var is_default: Bool
-    var pokemon: [Pokemon]
+struct PokemonEntry: Codable {
+    var entry_number: Int
+    var pokemon_species: [PokemonSpecies]
 }

@@ -1,5 +1,5 @@
 //
-//  Variety.swift
+//  OtherSprites.swift
 //  pokedex-app
 //
 //  Created by OPSolutions on 6/26/21.
@@ -8,7 +8,6 @@
 
 import UIKit
 
-struct Variety: Codable {
-    var is_default: Bool
-    var pokemon: [Pokemon]
+struct OtherSprites: Codable {
+    var official_artwork: OfficialArtwork
 }

@@ -8,8 +8,8 @@
 
 import UIKit
 
-struct Generation {
-    let name : String
-    let url : String
+struct Generation : Codable {
+    let name : String?
+    let url : String?
     let main_region : Region
 }
