@@ -9,7 +9,7 @@
 import UIKit
 
 struct Generation : Codable {
+    let id: String?
     let name : String?
-    let url : String?
-    let main_region : Region
+    let main_region : Resource<Region>?
 }

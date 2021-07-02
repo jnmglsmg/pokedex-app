@@ -9,11 +9,38 @@
 import UIKit
 
 struct GenerationListViewModel {
-    var name: String
-    var region: String
+    var generationViewModelList: [GenerationViewModel]?
 
+    init(generationList: GenerationList) {
+        generationViewModelList = generationList
+    }
+    
+    func itemAtIndex(index: Int) -> GenerationViewModel? {
+        guard let generationViewModelList = generationViewModelList else {
+            return nil
+        }
+        return generationViewModelList[index]
+    }
+    
+    func numberOfSectionsInTableView() -> Int {
+        guard let generationViewModelList = generationViewModelList else {
+            return 0
+        }
+        
+        return generationViewModelList.count
+    }
+    
+    func numberOfRowsInSection(section: Int) -> Int {
+        return 1
+    }
+}
+
+struct GenerationViewModel {
+    var generation: String?
+    var regionName: String?
+    
     init(generation: Generation) {
-        self.name = generation.name ?? ""
-        self.region = generation.main_region.name
+        self.generation = generation.name ?? ""
+        self.regionName = generation.main_region?.name ?? ""
     }
 }

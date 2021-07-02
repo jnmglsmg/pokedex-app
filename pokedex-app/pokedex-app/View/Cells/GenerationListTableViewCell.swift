@@ -14,22 +14,17 @@ class GenerationListTableViewCell: UITableViewCell {
     @IBOutlet var generationLabel: UILabel?
     @IBOutlet var regionLabel: UILabel?
     
-    var generationViewModel: GenerationListViewModel? {
-        didSet {
-            guard let generationViewModel = generationViewModel else {
-                return
-            }
-            generationLabel?.text = generationViewModel.name
-            regionLabel?.text = generationViewModel.region
-        }
-    }
-    
     override func awakeFromNib() {
         super.awakeFromNib()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+    
+    func setGenerationTitle(generationTitle: String, regionName: String) {
+        self.generationLabel?.text = generationTitle
+        self.regionLabel?.text = regionName
     }
     
 }

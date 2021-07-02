@@ -11,44 +11,23 @@ import UIKit
 class GenerationListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet var tableView: UITableView?
-    var generationList: [GenerationListViewModel] = []
+    var generationListViewModel: GenerationListViewModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         registerNib()
-        initializeDummyGenerationList()
     }
-    
-    fileprivate func initializeDummyGenerationList() {
-        let region1 = Region(name: "Kanto", pokedexes: [])
-        let generation1 = Generation(name: "Generation-I", url: nil, main_region: region1)
-        let generationViewModel1 = GenerationListViewModel(generation: generation1)
-        
-        let region2 = Region(name: "Kanto", pokedexes: [])
-        let generation2 = Generation(name: "Generation-II", url: nil, main_region: region2)
-        let generationViewModel2 = GenerationListViewModel(generation: generation2)
-        
-        let region3 = Region(name: "Kanto", pokedexes: [])
-        let generation3 = Generation(name: "Generation-III", url: nil, main_region: region3)
-        let generationViewModel3 = GenerationListViewModel(generation: generation3)
-        
-        let region4 = Region(name: "Kanto", pokedexes: [])
-        let generation4 = Generation(name: "Generation-IV", url: nil, main_region: region4)
-        let generationViewModel4 = GenerationListViewModel(generation: generation4)
-        
-        generationList.append(generationViewModel1)
-        generationList.append(generationViewModel2)
-        generationList.append(generationViewModel3)
-        generationList.append(generationViewModel4)
-    }
-    
     func registerNib() {
         tableView?.register(UINib(nibName:"GenerationListTableViewCell", bundle: nil), forCellReuseIdentifier: GenerationListTableViewCellID)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let generationViewModel = generationListViewModel?.itemAtIndex(index: indexPath.section) else {
+            return UITableViewCell()
+        }
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: GenerationListTableViewCellID) as! GenerationListTableViewCell
-        cell.generationViewModel = generationList[indexPath.section]
+        cell.setGenerationTitle(generationTitle: generationViewModel.generation ?? "", regionName: generationViewModel.regionName ?? "")
         cell.layer.cornerRadius = 5
         cell.backgroundColor = UIColor.lightGray
         return cell
@@ -59,7 +38,7 @@ class GenerationListViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return generationList.count
+        return generationListViewModel?.numberOfSectionsInTableView() ?? 0
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

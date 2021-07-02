@@ -10,5 +10,5 @@ import UIKit
 
 struct GenerationList : Codable {
     let count : Int
-    let result : [Generation]
+    let result : Resource<[Generation]>
 }

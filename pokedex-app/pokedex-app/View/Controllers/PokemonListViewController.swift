@@ -9,10 +9,10 @@
 import UIKit
 
 let PokemonListViewControllerID = "PokemonListViewControllerID"
-class PokemonListViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class PokemonListViewController: UIViewController /*Collection View Delegate and DataSource */ {
 
     @IBOutlet var collectionView: UICollectionView?
-    var pokemonListViewModel: [PokemonListViewModel]
+    var pokemonListViewModel: [PokemonListViewModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()

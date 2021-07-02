@@ -12,34 +12,21 @@ class GenerationListService: NSObject {
     
     var generationList: [Generation]? = []
     
-    fileprivate func getGenerationListData(completion: @escaping (_ result: GenerationList?, _ error: Error?) -> Void) {
+    func loadGeneration(completion: @escaping(_ generationListViewModel: GenerationListViewModel?, _ error: Error?) -> Void) {
+        let rootUrl = URL(string: "https://pokeapi.co/api/v2/generation/")
+        let baseGeneration = Resource<GenerationList>(name: "Root URL", url: rootUrl!)
         
-        let urlString = "https://pokeapi.co/api/v2/generation/"
-        NetworkService.shared.executeFetchRequest(with: urlString) { (data, error) in
-            guard let data = data, error == nil else {
+        NetworkService.shared.loadResource(resource: baseGeneration) { result in
+            switch result {
+            case .success(let generationList):
+                //load Result: Resources
+                //dispatch queue for each generationList.result
+                //once finished then convert to view model
+                completion(generationListViewModel, nil)
+            case .failure(let error):
                 completion(nil, error)
-                return
             }
-            
-            let parsedGenerationList = self.parseGenerationListData(data: data)
-            completion(parsedGenerationList, nil)
         }
     }
-    
-    fileprivate func parseGenerationListData(data:Data) -> GenerationList? {
-        let decoder = JSONDecoder()
-        var generationListResult : GenerationList?
-        do {
-            let parsedGenerationList = try decoder.decode(GenerationList.self, from: data)
-            generationListResult = parsedGenerationList
-        }
-        catch {
-            print(error.localizedDescription)
-        }
-        
-        return generationListResult
-    }
-    
-    //MARK: Dummy
     
 }

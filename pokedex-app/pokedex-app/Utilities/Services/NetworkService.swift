@@ -8,7 +8,16 @@
 
 import UIKit
 
+struct Resource<T: Codable> : Codable {
+    let name: String?
+    let url: URL?
+}
 
+enum NetworkError : Error {
+    case domainError
+    case parseError
+    case urlError
+}
 
 class NetworkService: NSObject {
     let baseUrl = "https://pokeapi.co/api/v2"
@@ -60,6 +69,27 @@ class NetworkService: NSObject {
     
     //MARK: Parse Data
     
-    
-
+    func loadResource<T>(resource: Resource<T>, completion: @escaping(Result<T,NetworkError>) -> Void) {
+        guard let url = resource.url else {
+            completion(.failure(.urlError))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            guard let data = data, error == nil else {
+                completion(.failure(.domainError))
+                return
+            }
+            
+            let result = try? JSONDecoder().decode(T.self, from: data)
+            
+            if let result = result {
+                completion(.success(result))
+                return
+            } else {
+                completion(.failure(.parseError))
+            }
+            
+        }.resume()
+    }
 }
