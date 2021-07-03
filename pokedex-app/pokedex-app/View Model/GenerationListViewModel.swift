@@ -11,7 +11,7 @@ import UIKit
 struct GenerationListViewModel {
     var generationViewModelList: [GenerationViewModel]?
 
-    init(generationList: GenerationList) {
+    init(generationList: [GenerationViewModel]) {
         generationViewModelList = generationList
     }
     
@@ -38,9 +38,10 @@ struct GenerationListViewModel {
 struct GenerationViewModel {
     var generation: String?
     var regionName: String?
+//    var pokedexResource: Resource<Pokedex>
     
     init(generation: Generation) {
         self.generation = generation.name ?? ""
-        self.regionName = generation.main_region?.name ?? ""
+//        self.regionName = generation.main_region?.name ?? ""
     }
 }

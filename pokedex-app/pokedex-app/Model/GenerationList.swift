@@ -9,6 +9,6 @@
 import UIKit
 
 struct GenerationList : Codable {
-    let count : Int
-    let result : Resource<[Generation]>
+    var count : Int?
+    var results : [Resource<Generation>]?
 }

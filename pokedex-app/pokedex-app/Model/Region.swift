@@ -9,6 +9,6 @@
 import UIKit
 
 struct Region : Codable {
-    let name : String?
+    var name : String?
 //    let pokedexes : [Pokedexes]?
 }
