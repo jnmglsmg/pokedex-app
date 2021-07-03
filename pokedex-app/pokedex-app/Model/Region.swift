@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Region {
-    let name : String
-    let pokedexes : [Pokedex]
+struct Region : Codable {
+    var name : String?
+//    let pokedexes : [Pokedexes]?
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct GenerationList {
-    let count : Int
-    let result : Generation
+struct GenerationList : Codable {
+    var count : Int?
+    var results : [Resource<Generation>]?
 }

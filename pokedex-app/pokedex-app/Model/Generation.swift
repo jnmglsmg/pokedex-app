@@ -8,8 +8,8 @@
 
 import UIKit
 
-struct Generation {
-    let name : String
-    let url : String
-    let main_region : Region
+struct Generation : Codable {
+    var id: Int?
+    var name : String?
+    var main_region : Resource<Region>?
 }
