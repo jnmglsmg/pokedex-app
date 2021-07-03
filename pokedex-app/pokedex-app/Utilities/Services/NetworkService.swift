@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Resource<T: Codable> : Codable {
+struct Resource<T: Decodable> : Decodable {
     let name: String?
     let url: String?
 }
