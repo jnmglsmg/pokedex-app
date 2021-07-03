@@ -10,23 +10,68 @@ import UIKit
 
 class GenerationListService: NSObject {
     
-    var generationList: [Generation]? = []
-    
-    func loadGeneration(completion: @escaping(_ generationListViewModel: GenerationListViewModel?, _ error: Error?) -> Void) {
-        let rootUrl = URL(string: "https://pokeapi.co/api/v2/generation/")
-        let baseGeneration = Resource<GenerationList>(name: "Root URL", url: rootUrl!)
+    func fetchRootGeneration(completion: @escaping(_ generationListViewModel: GenerationListViewModel?, _ error: Error?) -> Void) {
+        let rootUrlString = "https://pokeapi.co/api/v2/generation/"
+        let baseGeneration = Resource<GenerationList>(name: "Root URL", url: rootUrlString)
         
+        //1st API Call
+        //load root url
         NetworkService.shared.loadResource(resource: baseGeneration) { result in
             switch result {
             case .success(let generationList):
-                //load Result: Resources
-                //dispatch queue for each generationList.result
-                //once finished then convert to view model
-                completion(generationListViewModel, nil)
+                guard let generationResourceList = generationList.results else {
+                    return
+                }
+                
+                //2nd Chain of API Call
+                //completion block for each generation resource
+                self.fetchGenerationItems(generationResourceList: generationResourceList) { (result, error) in
+                    guard let result = result, error == nil else {
+                        completion(nil, error)
+                        return
+                    }
+                    let generationListViewModel = GenerationListViewModel(generationList: result)
+                    DispatchQueue.main.async {
+                        completion(generationListViewModel, nil)
+                    }
+                    
+                }
             case .failure(let error):
-                completion(nil, error)
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                }
             }
         }
     }
     
+    func fetchGenerationItems(generationResourceList: [Resource<Generation>], completion: @escaping(_ generation: [GenerationViewModel]?,_ error: Error?) -> Void) {
+        
+        var generationViewModelList: [GenerationViewModel] = []
+        //load each resources from generationList.result: [Resource<Generation>]
+        let group = DispatchGroup()
+        for generationResource in generationResourceList {
+            
+            group.enter()
+            NetworkService.shared.loadResource(resource: generationResource) { result in
+                switch result {
+                case .success(let generation):
+                    //Result to View Model
+                    let generationViewModel = GenerationViewModel(generation: generation)
+                    generationViewModelList.append(generationViewModel)
+                    group.leave()
+                    
+                case .failure(let error):
+                    group.leave()
+                    completion(nil, error)
+                }
+            }
+        }
+        
+        group.notify(queue: DispatchQueue.global()) {
+            print("Complete")
+            completion(generationViewModelList, nil)
+        }
+    }
 }
+
+

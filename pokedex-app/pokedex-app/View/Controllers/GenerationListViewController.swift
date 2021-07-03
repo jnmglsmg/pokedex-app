@@ -12,10 +12,20 @@ class GenerationListViewController: UIViewController, UITableViewDelegate, UITab
 
     @IBOutlet var tableView: UITableView?
     var generationListViewModel: GenerationListViewModel?
+    let generationService: GenerationListService = GenerationListService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         registerNib()
+        generationService.fetchRootGeneration { (result, error) in
+            guard let result = result, error == nil else {
+                self.showAlert(title: "Failed", message: error?.localizedDescription ?? "")
+                return
+            }
+            
+            self.generationListViewModel = result
+            self.tableView?.reloadData()
+        }
     }
     func registerNib() {
         tableView?.register(UINib(nibName:"GenerationListTableViewCell", bundle: nil), forCellReuseIdentifier: GenerationListTableViewCellID)
@@ -61,6 +71,13 @@ class GenerationListViewController: UIViewController, UITableViewDelegate, UITab
         headerView.backgroundColor = UIColor.clear
         
         return headerView
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertOkButton = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(alertOkButton)
+        self.present(alertController, animated: true, completion: nil)
     }
 }
 

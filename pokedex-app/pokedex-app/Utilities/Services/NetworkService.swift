@@ -10,7 +10,7 @@ import UIKit
 
 struct Resource<T: Codable> : Codable {
     let name: String?
-    let url: URL?
+    let url: String?
 }
 
 enum NetworkError : Error {
@@ -70,12 +70,13 @@ class NetworkService: NSObject {
     //MARK: Parse Data
     
     func loadResource<T>(resource: Resource<T>, completion: @escaping(Result<T,NetworkError>) -> Void) {
-        guard let url = resource.url else {
+        guard let urlString = resource.url else {
             completion(.failure(.urlError))
             return
         }
         
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
+        let url = URL(string: urlString)
+        URLSession.shared.dataTask(with: url!) { (data, response, error) in
             guard let data = data, error == nil else {
                 completion(.failure(.domainError))
                 return
