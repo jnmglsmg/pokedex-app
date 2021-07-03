@@ -13,6 +13,8 @@ class GenerationListService: NSObject {
     func fetchRootGeneration(completion: @escaping(_ generationListViewModel: GenerationListViewModel?, _ error: Error?) -> Void) {
         let rootUrlString = "https://pokeapi.co/api/v2/generation/"
         let baseGeneration = Resource<GenerationList>(name: "Root URL", url: rootUrlString)
+        
+        //1st API Call
         //load root url
         NetworkService.shared.loadResource(resource: baseGeneration) { result in
             switch result {
@@ -20,6 +22,8 @@ class GenerationListService: NSObject {
                 guard let generationResourceList = generationList.results else {
                     return
                 }
+                
+                //2nd Chain of API Call
                 //completion block for each generation resource
                 self.fetchGenerationItems(generationResourceList: generationResourceList) { (result, error) in
                     guard let result = result, error == nil else {
@@ -44,22 +48,28 @@ class GenerationListService: NSObject {
         
         var generationViewModelList: [GenerationViewModel] = []
         //load each resources from generationList.result: [Resource<Generation>]
+        let group = DispatchGroup()
         for generationResource in generationResourceList {
-            // Create Operation Queue
+            
+            group.enter()
             NetworkService.shared.loadResource(resource: generationResource) { result in
                 switch result {
                 case .success(let generation):
-                    //converts each result from generationList.result to View Model
+                    //Result to View Model
                     let generationViewModel = GenerationViewModel(generation: generation)
                     generationViewModelList.append(generationViewModel)
+                    group.leave()
                     
-                    completion(generationViewModelList, nil)
                 case .failure(let error):
-                    DispatchQueue.main.async {
-                        completion(nil, error)
-                    }
+                    group.leave()
+                    completion(nil, error)
                 }
             }
+        }
+        
+        group.notify(queue: DispatchQueue.global()) {
+            print("Complete")
+            completion(generationViewModelList, nil)
         }
     }
 }
