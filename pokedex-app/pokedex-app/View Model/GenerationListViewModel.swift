@@ -41,7 +41,7 @@ struct GenerationViewModel {
 //    var pokedexResource: Resource<Pokedex>
     
     init(generation: Generation) {
-        self.generation = generation.name?.capitalized ?? ""
+        self.generation = generation.name?.uppercased() ?? ""
         self.regionName = generation.main_region?.name?.capitalized ?? ""
     }
 }
