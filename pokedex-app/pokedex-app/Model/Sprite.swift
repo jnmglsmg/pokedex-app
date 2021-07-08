@@ -10,5 +10,5 @@ import UIKit
 
 struct Sprite: Decodable {
     let front_default: String?
-    let other: [OtherSprites]?
+    let other: OtherSprites?
 }

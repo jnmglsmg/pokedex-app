@@ -17,9 +17,11 @@ class GenerationListViewController: UIViewController, UITableViewDelegate, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         registerNib()
-        generationService.fetchRootGeneration { (result, error) in
+        generationService.fetchGenerationList { (result, error) in
             guard let result = result, error == nil else {
-                self.showAlert(title: "Failed", message: error?.localizedDescription ?? "")
+                DispatchQueue.main.async {
+                    self.showAlert(title: "Failed", message: error?.localizedDescription ?? "")
+                }
                 return
             }
             
@@ -27,6 +29,7 @@ class GenerationListViewController: UIViewController, UITableViewDelegate, UITab
             self.tableView?.reloadData()
         }
     }
+    
     func registerNib() {
         tableView?.register(UINib(nibName:"GenerationListTableViewCell", bundle: nil), forCellReuseIdentifier: GenerationListTableViewCellID)
     }
@@ -54,8 +57,25 @@ class GenerationListViewController: UIViewController, UITableViewDelegate, UITab
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let pokemonListViewController = self.storyboard?.instantiateViewController(identifier: PokemonListViewControllerID)
-        self.navigationController?.pushViewController(pokemonListViewController!, animated: true)
+        let generationViewModel = generationListViewModel?.itemAtIndex(index: indexPath.row)
+        
+        guard let pokemonSpeciesResources = generationViewModel?.pokemonSpeciesResource else {
+            showAlert(title: "Failed", message: "Resource Unavailable")
+            return
+        }
+         
+        generationService.fetchPokemonList(with: pokemonSpeciesResources) { (result) in
+            DispatchQueue.main.async {
+            switch result {
+            case .success(let pokemonListViewModel):
+                let pokemonListViewController = PokemonListViewController.initWithPokemonList(pokemonListViewModel: pokemonListViewModel)
+                self.navigationController?.pushViewController(pokemonListViewController, animated: true)
+                
+            case .failure(let error):
+                self.showAlert(title: "Failed", message: error.localizedDescription)
+                }
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

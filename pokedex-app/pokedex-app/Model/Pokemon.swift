@@ -11,5 +11,6 @@ import UIKit
 struct Pokemon: Decodable {
     let id: Int?
     let name: String?
-    let sprites: [Sprite]?
+    let sprites: Sprite?
+    let types: [Resource<Type>]?
 }

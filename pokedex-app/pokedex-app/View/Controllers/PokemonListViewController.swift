@@ -12,7 +12,16 @@ let PokemonListViewControllerID = "PokemonListViewControllerID"
 class PokemonListViewController: UIViewController /*Collection View Delegate and DataSource */ {
 
     @IBOutlet var collectionView: UICollectionView?
-    var pokemonListViewModel: [PokemonListViewModel] = []
+    var pokemonListViewModel: PokemonListViewModel?
+
+    static func initWithPokemonList(pokemonListViewModel: PokemonListViewModel) -> PokemonListViewController {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController = storyboard.instantiateViewController(identifier: PokemonListViewControllerID) as PokemonListViewController
+        
+        viewController.pokemonListViewModel = pokemonListViewModel
+        
+        return viewController
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

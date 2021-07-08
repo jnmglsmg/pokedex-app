@@ -1,14 +1,14 @@
 //
-//  Region.swift
+//  Type.swift
 //  pokedex-app
 //
-//  Created by OPSolutions on 6/20/21.
+//  Created by OPSolutions on 7/8/21.
 //  Copyright © 2021 JM Sumague. All rights reserved.
 //
 
 import UIKit
 
-struct Region : Decodable {
-    let id: Int?
+struct Type: Decodable {
     let name: String?
+    let id: Int?
 }

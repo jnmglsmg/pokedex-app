@@ -10,7 +10,7 @@ import UIKit
 
 class GenerationListService: NSObject {
     
-    func fetchRootGeneration(completion: @escaping(_ generationListViewModel: GenerationListViewModel?, _ error: Error?) -> Void) {
+    func fetchGenerationList(completion: @escaping(_ generationListViewModel: GenerationListViewModel?, _ error: Error?) -> Void) {
         let rootUrlString = "https://pokeapi.co/api/v2/generation/"
         let baseGeneration = Resource<GenerationList>(name: "Root URL", url: rootUrlString)
         
@@ -50,7 +50,6 @@ class GenerationListService: NSObject {
         //load each resources from generationList.result: [Resource<Generation>]
         let group = DispatchGroup()
         for generationResource in generationResourceList {
-            
             group.enter()
             NetworkService.shared.loadResource(resource: generationResource) { result in
                 switch result {
@@ -58,18 +57,103 @@ class GenerationListService: NSObject {
                     //Result to View Model
                     let generationViewModel = GenerationViewModel(generation: generation)
                     generationViewModelList.append(generationViewModel)
-                    group.leave()
                     
                 case .failure(let error):
-                    group.leave()
                     completion(nil, error)
                 }
+                group.leave()
             }
         }
         
         group.notify(queue: DispatchQueue.global()) {
             print("Complete")
             completion(generationViewModelList, nil)
+        }
+    }
+
+    func fetchPokemonList(with resources: [Resource<PokemonSpecies>] , completion: @escaping(Result<PokemonListViewModel, NetworkError>) -> Void) {
+        var pokemonViewModelList: [PokemonViewModel] = []
+        
+        //API Chain 1
+        fetchPokemonSpecies(with: resources) { (pokemonSpeciesResult) in
+            let group = DispatchGroup()
+            
+            switch pokemonSpeciesResult {
+            case .success(let pokemonSpeciesList):
+                for pokemonSpecies in pokemonSpeciesList {
+                
+                    group.enter()
+                    let variety = pokemonSpecies.varieties?.first
+                    if let pokemonResource = variety?.pokemon {
+                        
+                        //API Chain 2
+                        self.fetchPokemonDetails(with: pokemonResource) { (pokemonResult) in
+                            
+                            switch pokemonResult {
+                            case .success(let pokemon):
+                                let pokemonViewModel = PokemonViewModel(name: pokemon.name,
+                                                                        image_url: pokemon.sprites?.other?.official_artwork?.front_default,
+                                                                        type: pokemon.types,
+                                                                        id: pokemon.id,
+                                                                        isLegendary: pokemonSpecies.is_legendary, order: pokemonSpecies.order)
+                                pokemonViewModelList.append(pokemonViewModel)
+                                
+                            case .failure(let error):
+                                completion(.failure(error))
+                            }
+                            
+                            group.leave()
+                        }
+                    }
+                }
+            case .failure(let error):
+                print("Failed")
+                completion(.failure(error))
+            }
+            group.notify(queue: DispatchQueue.global()) {
+                print("Final API Complete")
+                let pokemonListViewModel = PokemonListViewModel(pokemonList: pokemonViewModelList)
+                completion(.success(pokemonListViewModel))
+            }
+        }
+    }
+    
+    //MARK: Fetch Pokemon Details Methods
+    func fetchPokemonSpecies(with resources: [Resource<PokemonSpecies>], completion: @escaping(Result<[PokemonSpecies], NetworkError>) -> Void) {
+        
+        var pokemonSpeciesList: [PokemonSpecies] = []
+        let group = DispatchGroup()
+        
+        for resource in resources {
+            group.enter()
+            NetworkService.shared.loadResource(resource: resource) { result in
+                switch result {
+                case .success(let pokemonSpecies):
+                    print("Success")
+                    pokemonSpeciesList.append(pokemonSpecies)
+                case .failure(let error):
+                    print("Failed")
+                    completion(.failure(error))
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: DispatchQueue.global()) {
+            print("Pokemon Species API Complete")
+            completion(.success(pokemonSpeciesList))
+        }
+    }
+    
+    func fetchPokemonDetails(with resource: Resource<Pokemon>, completion: @escaping(Result<Pokemon, NetworkError>) -> Void) {
+        NetworkService.shared.loadResource(resource: resource) { (result) in
+            switch result {
+            case .success(let pokemon):
+                print("Success")
+                completion(.success(pokemon))
+            case .failure(let error):
+                print("Failure")
+                completion(.failure(error))
+            }
         }
     }
 }
