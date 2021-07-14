@@ -9,8 +9,8 @@
 import UIKit
 
 struct Resource<T: Decodable> : Decodable {
-    let name: String?
-    let url: String?
+    let name: String
+    let url: String
 }
 
 enum NetworkError : Error {
@@ -24,10 +24,7 @@ class NetworkService: NSObject {
    static let shared = NetworkService()
     
     func loadResource<T>(resource: Resource<T>, completion: @escaping(Result<T,NetworkError>) -> Void) {
-        guard let urlString = resource.url else {
-            completion(.failure(.urlError))
-            return
-        }
+         let urlString = resource.url 
         
         let url = URL(string: urlString)
         URLSession.shared.dataTask(with: url!) { (data, response, error) in
@@ -44,7 +41,22 @@ class NetworkService: NSObject {
             } else {
                 completion(.failure(.parseError))
             }
-            
+        }.resume()
+    }
+    
+    func loadData(with urlString: String, completion: @escaping(_ result: Data?, _ error: Error?) -> Void) {
+        
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        
+        let session = URLSession(configuration: .default)
+        session.dataTask(with: url) { (data, response, error) in
+            guard let data = data, error == nil else {
+                completion(nil, error)
+                return
+            }
+            completion(data, nil)
         }.resume()
     }
 }

@@ -1,5 +1,5 @@
 //
-//  Type.swift
+//  TypeList.swift
 //  pokedex-app
 //
 //  Created by OPSolutions on 7/8/21.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Type: Decodable {
-    let name: String
-    let id: Int
+struct TypeList: Decodable {
+    let slot: Int
+    let type: Resource<Type>
 }

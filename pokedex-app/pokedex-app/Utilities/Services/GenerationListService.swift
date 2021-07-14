@@ -19,9 +19,7 @@ class GenerationListService: NSObject {
         NetworkService.shared.loadResource(resource: baseGeneration) { result in
             switch result {
             case .success(let generationList):
-                guard let generationResourceList = generationList.results else {
-                    return
-                }
+                let generationResourceList = generationList.results 
                 
                 //2nd Chain of API Call
                 //completion block for each generation resource
@@ -81,27 +79,20 @@ class GenerationListService: NSObject {
             switch pokemonSpeciesResult {
             case .success(let pokemonSpeciesList):
                 for pokemonSpecies in pokemonSpeciesList {
-                
                     group.enter()
-                    let variety = pokemonSpecies.varieties?.first
+                    let variety = pokemonSpecies.varieties.first
                     if let pokemonResource = variety?.pokemon {
                         
                         //API Chain 2
                         self.fetchPokemonDetails(with: pokemonResource) { (pokemonResult) in
-                            
                             switch pokemonResult {
                             case .success(let pokemon):
-                                let pokemonViewModel = PokemonViewModel(name: pokemon.name,
-                                                                        image_url: pokemon.sprites?.other?.official_artwork?.front_default,
-                                                                        type: pokemon.types,
-                                                                        id: pokemon.id,
-                                                                        isLegendary: pokemonSpecies.is_legendary, order: pokemonSpecies.order)
+                                let pokemonViewModel = PokemonViewModel(pokemonSpecies: pokemonSpecies, pokemon: pokemon)
                                 pokemonViewModelList.append(pokemonViewModel)
                                 
                             case .failure(let error):
                                 completion(.failure(error))
                             }
-                            
                             group.leave()
                         }
                     }
@@ -111,7 +102,7 @@ class GenerationListService: NSObject {
                 completion(.failure(error))
             }
             group.notify(queue: DispatchQueue.global()) {
-                print("Final API Complete")
+                print("All API Calls Complete")
                 let pokemonListViewModel = PokemonListViewModel(pokemonList: pokemonViewModelList)
                 completion(.success(pokemonListViewModel))
             }

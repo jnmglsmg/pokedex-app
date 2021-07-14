@@ -9,7 +9,7 @@
 import UIKit
 
 struct Variety: Decodable {
-    let is_default: Bool?
-    let pokemon: Resource<Pokemon>?
+    let is_default: Bool
+    let pokemon: Resource<Pokemon>
 
 }

@@ -9,6 +9,6 @@
 import UIKit
 
 struct Region : Decodable {
-    let id: Int?
-    let name: String?
+    let id: Int
+    let name: String
 }

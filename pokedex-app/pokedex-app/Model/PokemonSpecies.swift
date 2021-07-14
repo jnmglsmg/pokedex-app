@@ -9,9 +9,9 @@
 import UIKit
 
 struct PokemonSpecies: Decodable {
-    let name: String?
-    let order: Int?
-    let id: Int?
-    let is_legendary: Bool?
-    let varieties: [Variety]?
+    let name: String
+    let order: Int
+    let id: Int
+    let is_legendary: Bool
+    let varieties: [Variety]
 }

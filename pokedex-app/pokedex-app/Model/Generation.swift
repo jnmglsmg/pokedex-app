@@ -9,8 +9,8 @@
 import UIKit
 
 struct Generation : Decodable {
-    let id: Int?
-    let name: String?
-    let main_region: Resource<Region>?
-    let pokemon_species: [Resource<PokemonSpecies>]?
+    let id: Int
+    let name: String
+    let main_region: Resource<Region>
+    let pokemon_species: [Resource<PokemonSpecies>]
 }

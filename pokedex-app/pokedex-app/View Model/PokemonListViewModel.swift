@@ -9,43 +9,81 @@
 import UIKit
 
 struct PokemonListViewModel {
-    let pokemonViewModelList: [PokemonViewModel]
+    var pokemonViewModelList: [PokemonViewModel]
+    
+    init() {
+        self.pokemonViewModelList = []
+    }
     
     init(pokemonList: [PokemonViewModel]) {
-        self.pokemonViewModelList = pokemonList
+        self.pokemonViewModelList = pokemonList.sorted(by: { $0.order < $1.order})
     }
 }
 
 struct PokemonViewModel {
-    let id: Int?
-    var name: String?
-    var image_url: String?
-    var types: [Resource<Type>]?
-    var is_legendary: Bool?
-    let order: Int?
     
-    init() {
-        self.id = nil
-        self.name = ""
-        self.image_url = ""
-        self.types = []
-        self.is_legendary = false
-        self.order = nil
+    private var pokemonModel: Pokemon
+    private var pokemonSpeciesModel: PokemonSpecies
+    
+    var id: Int {
+        get {
+            return pokemonModel.id
+        }
+    }
+    var name: String {
+        set {
+            pokemonModel.name = newValue
+        }
+        get {
+            return pokemonModel.name.capitalized
+        }
+    }
+    var image_url: String {
+        return pokemonModel.sprites.other.official_artwork.front_default
+    }
+    var types: [String] {
+        //            //Use Map
+        var typeStrings: [String] = []
+        for type in pokemonModel.types {
+            typeStrings.append(type.type.name)
+        }
+        return typeStrings
+
+    }
+    var is_legendary: Bool {
+        return pokemonSpeciesModel.is_legendary
+    }
+    var order: Int {
+        return pokemonSpeciesModel.order
     }
     
-    init(name: String?, image_url: String?, type: [Resource<Type>]?, id: Int?, isLegendary: Bool?, order: Int?) {
-        self.name = name ?? ""
-        self.image_url = image_url ?? ""
-        self.types = type ?? []
-        self.id = id ?? nil
-        self.is_legendary = isLegendary ?? false
-        self.order = order ?? nil
+    
+    init(pokemonSpecies: PokemonSpecies, pokemon: Pokemon) {
+        pokemonModel = pokemon
+        pokemonSpeciesModel = pokemonSpecies
+        
+//        id = pokemon.id
+//        name = pokemon.name
+//        order = pokemonSpecies.order ?? 0
+//        image_url = pokemon.sprites?.other?.official_artwork?.front_default
+//        is_legendary = pokemonSpecies.is_legendary
+//
     }
+//
+//    init(name: String?, image_url: String?, typeList: [TypeList]?, id: Int?, isLegendary: Bool?, order: Int?) {
+//        self.name = name?.capitalized ?? ""
+//        self.image_url = image_url ?? ""
+//        self.id = id ?? nil
+//        self.is_legendary = isLegendary ?? false
+//        self.order = order ?? 0
+//
+//
+//    }
 }
 
 extension PokemonListViewModel {
     
-    func getItem(with id:Int) -> PokemonViewModel? {
+    func getItemWithId(id:Int) -> PokemonViewModel? {
         return pokemonViewModelList.filter({ $0.id == id }).first ?? nil
     }
     
@@ -54,7 +92,7 @@ extension PokemonListViewModel {
     }
     
     func numberOfItemsInSection(section: Int) -> Int {
-        return 10
+        return self.pokemonViewModelList.count
     }
     
     func numberOfSectionsInCollectionView() -> Int {

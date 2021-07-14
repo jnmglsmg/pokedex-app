@@ -9,5 +9,5 @@
 import UIKit
 
 struct OfficialArtwork: Decodable {
-    let front_default: String?
+    let front_default: String
 }

@@ -10,7 +10,7 @@ import UIKit
 
 struct OtherSprites: Decodable {
     //Coding Keys
-    let official_artwork: OfficialArtwork?
+    let official_artwork: OfficialArtwork
 
     enum CodingKeys: String, CodingKey {
         case official_artwork = "official-artwork"

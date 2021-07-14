@@ -9,6 +9,6 @@
 import UIKit
 
 struct GenerationList : Decodable {
-    let count: Int?
-    let results: [Resource<Generation>]?
+    let count: Int
+    let results: [Resource<Generation>]
 }

@@ -8,9 +8,9 @@
 
 import UIKit
 
-struct Pokemon: Decodable {
-    let id: Int?
-    let name: String?
-    let sprites: Sprite?
-    let types: [Resource<Type>]?
+class Pokemon: Decodable {
+    let id: Int
+    var name: String
+    let sprites: Sprite
+    let types: [TypeList]
 }
