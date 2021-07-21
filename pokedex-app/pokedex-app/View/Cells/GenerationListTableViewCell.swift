@@ -16,15 +16,19 @@ class GenerationListTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        contentView.layer.cornerRadius = 5
+        contentView.layer.masksToBounds = true
+        
+        layer.shadowRadius = 3
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
+        layer.shadowOpacity = 0.2
+        layer.masksToBounds = false
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    func configureGeneration(_ generationViewModel: GenerationViewModel) {
+        generationLabel?.text = generationViewModel.generation
+        regionLabel?.text = generationViewModel.regionName
+        
     }
-    
-    func setGenerationTitle(generationTitle: String, regionName: String) {
-        self.generationLabel?.text = generationTitle
-        self.regionLabel?.text = regionName
-    }
-    
 }

@@ -148,7 +148,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="185" height="160"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </collectionViewCellContentView>
-                                        <color key="backgroundColor" red="0.98431372549019602" green="0.42352941176470588" blue="0.42352941176470588" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.61049871575342463" colorSpace="custom" customColorSpace="sRGB"/>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="CZi-3D-l5F">
                                         <rect key="frame" x="15" y="360" width="185" height="160"/>
@@ -178,6 +178,10 @@
                                         <color key="backgroundColor" red="0.48627450980392156" green="0.34509803921568627" blue="0.73725490196078436" alpha="1" colorSpace="calibratedRGB"/>
                                     </collectionViewCell>
                                 </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="u7A-J4-txN" id="boc-1F-7pR"/>
+                                    <outlet property="delegate" destination="u7A-J4-txN" id="4cy-K1-kK5"/>
+                                </connections>
                             </collectionView>
                             <searchBar contentMode="redraw" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="mE4-yj-W0E">
                                 <rect key="frame" x="0.0" y="104" width="414" height="56"/>
@@ -199,6 +203,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="bHO-GR-5rB"/>
                     </view>
+                    <connections>
+                        <outlet property="collectionView" destination="CbK-Me-6rF" id="FEo-hh-PKW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dj6-QH-PIm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
